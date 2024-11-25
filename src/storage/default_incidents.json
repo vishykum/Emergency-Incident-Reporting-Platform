@@ -1,5 +1,6 @@
 [
     {
+        "id": 0,
         "type": "elevator",
         "location": "Scotiabank, 8888, University High Street, UniverCity, Burnaby, Metro Vancouver Regional District, British Columbia, V5A 1S6, Canada",
         "reportedBy": "John Doe",
@@ -13,6 +14,7 @@
         ]
     },
     {
+        "id": 1,
         "type": "shooting",
         "location": "Metropolis at Metrotown, 4700, Kingsway, Metrotown, Burnaby, Metro Vancouver Regional District, British Columbia, V5H 4T0, Canada",
         "reportedBy": "James Doe",
@@ -26,6 +28,7 @@
         ]
     },
     {
+        "id": 2,
         "type": "medical",
         "location": "Salal Trail, Whalley, Surrey, Metro Vancouver Regional District, British Columbia, V3R 4G7, Canada",
         "reportedBy": "Jim Doe",
