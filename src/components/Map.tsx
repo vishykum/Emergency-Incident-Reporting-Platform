@@ -39,7 +39,7 @@ const Map: React.FC<MapProps> = ({ incidents, onAddIncident }) => {
         <div style={{ width: "60vw", height: "50vh", justifyContent: "center" }}>
             <MapContainer
                 center={[49.2827, -123.1207]} // Vancouver
-                zoom={13}
+                zoom={10}
                 style={{ height: "100%", width: "100%" }}
             >
                 <TileLayer
