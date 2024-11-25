@@ -2,7 +2,15 @@ import React from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { Incident } from './types'
 
+//Use this in the icon property for the Marker components to get the same marker icons throughout the map
+const markerIcon = new L.Icon({
+    iconUrl: String.raw`src\assets\marker-icon-2x.png`,
+    iconSize: [20, 30],
+});
+
+//This is supposed to set default marker properties but it is not working
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: "../assets/marker-icon-2x.png",
     iconUrl: "../assets/marker-icon.png",
@@ -10,10 +18,11 @@ L.Icon.Default.mergeOptions({
 });
 
 interface MapProps {
-    onAddIncident: (location: string) => void;
+    incidents: Incident[];
+    onAddIncident: (location: [number, number]) => void;
 }
 
-const Map: React.FC<MapProps> = ({ onAddIncident }) => {
+const Map: React.FC<MapProps> = ({ incidents, onAddIncident }) => {
     const [markerPosition, setMarkerPosition] = React.useState<[number, number] | null>(null);
 
     const MapClickHandler = () => {
@@ -39,7 +48,7 @@ const Map: React.FC<MapProps> = ({ onAddIncident }) => {
                 />
                 <MapClickHandler />
                 {markerPosition && (
-                    <Marker position={markerPosition}>
+                    <Marker position={markerPosition} icon={markerIcon}>
                         <Popup>
                             <div>
                                 <p>
@@ -48,7 +57,7 @@ const Map: React.FC<MapProps> = ({ onAddIncident }) => {
                                 </p>
                                 <button
                                     className="btn btn-primary btn-sm"
-                                    onClick={() => onAddIncident(`Latitude: ${markerPosition[0]}, Longitude: ${markerPosition[1]}`)}
+                                    onClick={() => onAddIncident(markerPosition)}
                                 >
                                     Report Emergency
                                 </button>
@@ -56,6 +65,17 @@ const Map: React.FC<MapProps> = ({ onAddIncident }) => {
                         </Popup>
                     </Marker>
                 )}
+
+                {incidents.map((incident, index) => (
+                    <Marker position={incident.latlng} icon={markerIcon} key={index}>
+                        <Popup>
+                            <p>
+                                Location: <strong>{"(lat:" + incident.latlng[0].toFixed(4) + ", lng:" + incident.latlng[1].toFixed(4) + ")"}</strong> <br />
+                                Type: <strong>{incident.type}</strong>
+                            </p>
+                        </Popup>
+                    </Marker>
+                ))}
             </MapContainer>
         </div>
     );

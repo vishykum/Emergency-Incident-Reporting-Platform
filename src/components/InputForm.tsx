@@ -5,12 +5,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 interface InputFormProps {
     show: boolean;
     onClose: () => void;
-    onSubmit: (data: Omit<Incident, "status" | "timeReported">) => void;
+    onSubmit: (data: Omit<Incident, "status" | "timeReported" | "latlng">) => void;
     location: string;
 }
 
 const InputForm: React.FC<InputFormProps> = ({ show, onClose, onSubmit, location }) => {
-    const [formData, setFormData] = React.useState<Omit<Incident, "status" | "timeReported">>({
+    const [formData, setFormData] = React.useState<Omit<Incident, "status" | "timeReported" | "latlng">>({
         type: "",
         location: location || "",
         reportedBy: "",
