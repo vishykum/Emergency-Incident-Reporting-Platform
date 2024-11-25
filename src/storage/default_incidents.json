@@ -1,3 +1,41 @@
-{
-    "name": "testing"
-}
+[
+    {
+        "type": "elevator",
+        "location": "Scotiabank, 8888, University High Street, UniverCity, Burnaby, Metro Vancouver Regional District, British Columbia, V5A 1S6, Canada",
+        "reportedBy": "John Doe",
+        "phoneNumber": "123-456-7890",
+        "comments": "The elevator is stuck between the 2nd and 3rd floor.",
+        "timeReported": "11/24/2024, 5:40:30 PM",
+        "status": "OPEN",
+        "latlng": [
+            49.278582110559014,
+            -122.91132393135953
+        ]
+    },
+    {
+        "type": "shooting",
+        "location": "Metropolis at Metrotown, 4700, Kingsway, Metrotown, Burnaby, Metro Vancouver Regional District, British Columbia, V5H 4T0, Canada",
+        "reportedBy": "James Doe",
+        "phoneNumber": "236-123-4567",
+        "comments": "There is an active shooter in the building. Please send help.",
+        "timeReported": "11/24/2024, 5:41:24 PM",
+        "status": "OPEN",
+        "latlng": [
+            49.22679399184016,
+            -123.00018786805234
+        ]
+    },
+    {
+        "type": "medical",
+        "location": "Salal Trail, Whalley, Surrey, Metro Vancouver Regional District, British Columbia, V3R 4G7, Canada",
+        "reportedBy": "Jim Doe",
+        "phoneNumber": "778-234-5678",
+        "comments": "My friend slipped and broke his leg.",
+        "timeReported": "11/24/2024, 5:42:25 PM",
+        "status": "OPEN",
+        "latlng": [
+            49.18004382512304,
+            -122.81586383597705
+        ]
+    }
+]

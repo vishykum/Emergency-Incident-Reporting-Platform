@@ -6,8 +6,12 @@ import { Incident } from "./components/types";
 import "bootstrap/dist/css/bootstrap.min.css";
 import defaultIncidentsJson from './storage/default_incidents.json'
 
+interface MapBounds {
+  southwest: L.LatLng;
+  northeast: L.LatLng;
+};
+
 const storageKey = "savestate272";
-var json = ""; //For json export
 
 
 const App: React.FC = () => {
@@ -15,11 +19,11 @@ const App: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [markerLocation, setMarkerLocation] = useState<string | null>(null);
   const [coord, setCoord] = useState<[number, number] | null>(null);
+  const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   
   //This effect ensures that the json version of the incident table stays updated triggered upon changes in incidents.length
   useEffect (() => {
-    json = JSON.stringify(incidents);
-    localStorage.setItem(storageKey, json);
+    localStorage.setItem(storageKey, JSON.stringify(incidents));
 
     console.log("Json string updated!");
   }, [incidents.length]);
@@ -31,34 +35,34 @@ const App: React.FC = () => {
   useLayoutEffect(() => {
     if (firstUpdate.current) {
       const data = localStorage.getItem(storageKey);
+      var objs: Incident[];
   
       if (data == null) {
-        console.log(defaultIncidentsJson);
+        objs = defaultIncidentsJson as Incident[];
+        console.log("Incidents loaded from default_incidents.json!");
       }
 
-      else {
-        json = data;
-        
-        let objs = JSON.parse(json) as Incident[];
+      else {        
+        objs = JSON.parse(data) as Incident[];
+        console.log("Incidents loaded from localStorage!");
 
-        setIncidents(objs);
-        firstUpdate.current = false;
-          console.log("Incidents loaded from localStorage!");
       }
+      setIncidents(objs);
+      firstUpdate.current = false;
     }
   });
-
 
   const handleFormSubmit = (newIncident: Omit<Incident, "status" | "timeReported" | "latlng">) => { // we don't need these for the form
     const timeReported = new Date().toLocaleString();
 
-    setIncidents([...incidents, { ...newIncident, timeReported, status: "OPEN", latlng: coord }]); //It is not possible for latlng to be null at this point in the app flow
+    setIncidents([...incidents, { ...newIncident, timeReported, status: "OPEN", latlng: coord || [200,200] }]); //200 is out of range for both latitude and longitude
     setShowForm(false);
   };
 
-  const handleMapClick = (location: [number, number]) => {
+  const handleMapClick = (location: [number, number], address: string) => {
     setCoord(location);
-    setMarkerLocation(`Latitude: ${location[0]}, Longitude: ${location[1]}`);
+    setMarkerLocation(address);
+
     setShowForm(true);
   };
 
@@ -73,14 +77,29 @@ const App: React.FC = () => {
     }
   };
 
+  const filterBasedOnView = (incident: Incident) => {
+    if (mapBounds !== null) {
+      let isInBounds = ((incident.latlng[0] < mapBounds.northeast.lat && incident.latlng[0] > mapBounds.southwest.lat) && ((incident.latlng[1] < mapBounds.northeast.lng && incident.latlng[1] > mapBounds.southwest.lng) ));
+
+      return isInBounds;
+    }
+
+    return false;
+  }
+
+  function getMapBounds(bounds: [L.LatLng, L.LatLng] | null): void {
+    if (bounds !== null)
+      setMapBounds({northeast: bounds[0], southwest: bounds[1]});
+  }
+
   return (
     <div className="container mt-4">
       <h1 className="text-center mb-4">Incident Reporting</h1>
 
-      <Map incidents={incidents} onAddIncident={handleMapClick} />
+      <Map incidents={incidents} onAddIncident={handleMapClick} setBounds={getMapBounds}/>
 
       <IncidentTable
-        incidents={incidents}
+        incidents={incidents.filter(filterBasedOnView)}
         onMoreInfo={handleMoreInfo}
         onDelete={handleDelete}
       />
