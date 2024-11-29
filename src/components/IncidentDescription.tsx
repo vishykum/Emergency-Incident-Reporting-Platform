@@ -6,6 +6,7 @@ import CSS from "csstype";
 interface IncidentDescriptionProps {
     incident: Incident;
     show: boolean;
+    loggedIn: boolean;
     onClose: () => void;
     onStatusChange: (incident: Incident, newStatus: string) => void;
 };
@@ -16,7 +17,8 @@ interface StatusOptionsProps {
     onSubmit: (newStatus: string) => void;
 };
 
-const IncidentDescription: React.FC<IncidentDescriptionProps> = ({ incident, show, onClose, onStatusChange }) => {
+const IncidentDescription: React.FC<IncidentDescriptionProps> = ({ incident, show, loggedIn, 
+    onClose, onStatusChange }) => {
     // Custom CSS styles for the sliding effect
     const isFirstRender = React.useRef(false);
 
@@ -134,7 +136,11 @@ const IncidentDescription: React.FC<IncidentDescriptionProps> = ({ incident, sho
                 setStatusOptionsShow(false);
         
                 if (newStatus != '') {
-                    onStatusChange(incident, newStatus);
+                    if(loggedIn) {
+                        onStatusChange(incident, newStatus);
+                    } else {
+                        alert("Cannot change status. Please log in to change status")
+                    }
                 }
             };
         
@@ -146,6 +152,10 @@ const IncidentDescription: React.FC<IncidentDescriptionProps> = ({ incident, sho
                     <p className="form-label"><strong>Reported by: </strong> {incident.reportedBy || "anonymous"}({incident.phoneNumber || "no phone number"})</p>
                     <p className="form-label"><strong>Status: </strong> {incident.status} <a className="link-warning" onClick={() => {setStatusOptionsShow(true)}}>Change</a></p>
                     <p className="form-label"><strong>Comments: </strong> {incident.comments || "no comments"} </p>
+                    <p className="form-label"><strong>Image: </strong> 
+                    {/* {incident.comments || "no image provided"}  */}
+                    <img src={incident.image} alt="no image provided"></img>
+                    </p>
 
                     <StatusOptions
                         show={statusOptionsShow}

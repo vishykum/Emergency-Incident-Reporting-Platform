@@ -127,6 +127,20 @@ const InputForm: React.FC<InputFormProps> = ({ show, onClose, onSubmit, location
                                 onChange={handleChange}
                                 rows={3}
                                 placeholder="Add relevant details about the incident."
+                                required
+                            ></textarea>
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="image" className="form-label">
+                                Image url (optional)
+                            </label>
+                            <textarea
+                                className="form-control"
+                                id="image"
+                                name="image"
+                                value={formData.image}
+                                onChange={handleChange}
+                                placeholder="Add an image url."
                             ></textarea>
                         </div>
                         <button type="submit" className="btn btn-primary w-100">

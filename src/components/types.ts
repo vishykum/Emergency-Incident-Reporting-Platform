@@ -10,6 +10,7 @@ export interface Incident {
     reportedBy?: string;
     phoneNumber?: string;
     comments?: string;
+    image?: string;
 }
 
 // This class is required because Map is a conflicting keyword in App.tsx due to importing Map from Map.tsx

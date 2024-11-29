@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import IncidentTable from "./components/IncidentTable";
 import InputForm from "./components/InputForm";
+import LogIn from "./components/LogIn";
 import { Incident, Dict } from "./components/types";
 import IncidentDescription from "./components/IncidentDescription";
 import "bootstrap/dist/css/bootstrap.min.css";
 import defaultIncidentsJson from './storage/default_incidents.json'
 import Map from "./components/Map";
+import md5 from "md5";
 
 interface MapBounds {
   southwest: L.LatLng;
@@ -16,6 +18,10 @@ const storageKey = "savestate272";
 const idKey = "id";
 
 const App: React.FC = () => {
+  const password: string = md5("password");
+  let input: string = "";
+  const [logInInfo, setLogInInfo] = useState("Not logged In");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
@@ -26,6 +32,8 @@ const App: React.FC = () => {
   const firstUpdate = useRef(true);   //firstUpdate ensures that incidents are only loaded on the first render
   const markerRefs = useRef(new Dict());
   const [currId, setId] = useState<number>(0);
+  const turnOffDescription = () => {setShowDescription(false)}//prob remove
+  let closedescription = turnOffDescription;//prob remove
 
   const handleAddMarkerRef = (id: number, ref: L.Marker | null) => {
     if (ref) {
@@ -35,7 +43,20 @@ const App: React.FC = () => {
     }
   };
   
-  
+  //This effect ensures that it is always displayed whether or not user is logged in
+  useEffect (() => {
+    if(isLoggedIn) {
+      setLogInInfo("Logged In");
+    } else {
+      setLogInInfo("Not Logged In");
+    }
+  }, [isLoggedIn])
+
+  //This effect ensures that the incident table always shows incidents in order from oldest to newest
+  useEffect (() => {
+    incidents.sort(compareNums);
+  }, [incidents])
+
   //This effect ensures that the incidents json in localStorage is up to date
   useEffect (() => {
     localStorage.setItem(storageKey, JSON.stringify(incidents));
@@ -59,7 +80,7 @@ const App: React.FC = () => {
   useLayoutEffect(() => {
     
     //CAUTION: The line below should be uncommented only for testing the default incidents
-    // localStorage.clear();
+    //localStorage.clear();
 
     if (firstUpdate.current) {
       const data = localStorage.getItem(storageKey);
@@ -99,6 +120,11 @@ const App: React.FC = () => {
     setId(currId+1);
   };
 
+  const handleLogIn = (i: string) => {
+    input = md5(i);
+    setIsLoggedIn(input === password);
+  }
+
   const handleMapClick = (location: [number, number], address: string) => {
     setCoord(location);
     setMarkerLocation(address);
@@ -130,8 +156,12 @@ const App: React.FC = () => {
   };
 
   const handleDelete = (incident: Incident) => {
-    if (window.confirm("Are you sure you want to delete this incident?")) {
-      setIncidents(incidents.filter((i) => i !== incident)); // deleting logic
+    if(isLoggedIn) {
+      if (window.confirm("Are you sure you want to delete this incident?")) {
+        setIncidents(incidents.filter((i) => i !== incident)); // deleting logic
+      }
+    } else {
+      alert("Cannot change status. Please log in to change status");
     }
   };
 
@@ -189,6 +219,10 @@ const App: React.FC = () => {
       setMapBounds({northeast: bounds[0], southwest: bounds[1]});
   }
 
+  function compareNums(a: Incident, b: Incident) {
+    return Date.parse(a.timeReported) - Date.parse(b.timeReported);
+  }
+
   return (
     <div className="container mt-4">
       <h1 className="text-center mb-4">Incident Reporting</h1>
@@ -199,10 +233,17 @@ const App: React.FC = () => {
         <IncidentDescription 
           incident={descriptionIncident as Incident} //Incident can't be null here
           show={showDescription}
-          onClose={() => {setShowDescription(false)}}
+          loggedIn={isLoggedIn}
+          onClose={closedescription}
           onStatusChange={handleStatusChange}
         />
       </div>
+      
+      <LogIn
+        show={true}
+        onSubmit={handleLogIn}
+      />
+      <strong>{logInInfo}</strong>
 
       <IncidentTable
         incidents={incidents.filter(filterBasedOnView)}
@@ -216,6 +257,7 @@ const App: React.FC = () => {
         onSubmit={handleFormSubmit}
         location={markerLocation || ""}
       />
+
     </div>
   );
 };
