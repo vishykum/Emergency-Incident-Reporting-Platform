@@ -161,7 +161,7 @@ const App: React.FC = () => {
         setIncidents(incidents.filter((i) => i !== incident)); // deleting logic
       }
     } else {
-      alert("Cannot change status. Please log in to change status");
+      alert("Cannot delete incident. Please log in to change status");
     }
   };
 
