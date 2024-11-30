@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 interface LogInProps {
@@ -6,24 +6,26 @@ interface LogInProps {
     onSubmit: (data: string) => void;
 }
 
+const LogIn: React.FC<LogInProps> = ({ show, onSubmit }) => {
+    const [input, setInput] = useState("");
 
-
-const LogIn: React.FC<LogInProps> = ({ show, onSubmit, }) => {
     const handleSubmit = () => {
-        let input: string = "";
-        if(document.getElementById("loggedIn") == null) {
-            onSubmit(input)
-        } else {
-            const inputElement = document.getElementById("loggedIn") as HTMLInputElement;
-            input = inputElement.value;
-        }
         onSubmit(input);
     };
 
+    if (!show) {
+        return null;
+    }
+
     return (
-        <div>
-            <label>Log in:</label>
-            <input type="text" id="loggedIn"></input>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <label htmlFor="loginInput" style={{ marginRight: "10px" }}>Log in:</label>
+            <input
+                type="text"
+                id="loginInput"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+            />
             <button onClick={handleSubmit}>Submit</button>
         </div>
     );

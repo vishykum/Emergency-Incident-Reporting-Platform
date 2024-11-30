@@ -45,15 +45,6 @@ const App: React.FC = () => {
     }
   };
   
-  //This effect ensures that it is always displayed whether or not user is logged in
-  useEffect (() => {
-    if(isLoggedIn) {
-      setLogInInfo({ message: "Logged In", status: "success" });
-    } else {
-      setLogInInfo({ message: "Not Logged In", status: "default" });
-    }
-  }, [isLoggedIn])
-
   //This effect ensures that the incident table always shows incidents in order from oldest to newest
   useEffect (() => {
     incidents.sort(compareNums);
@@ -124,15 +115,15 @@ const App: React.FC = () => {
 
   const handleLogIn = (input: string) => {
     const isValid = validatePassword(input, password);
-    if(isValid){
-      setIsLoggedIn(true);
-      setLogInInfo({ message: "Password correct. Logged In.", status: "success" });
-    }else{
-      setIsLoggedIn(false);
-      setLogInInfo({ message: "Password incorrect. Not Logged In.", status: "error" });
-
+    if (isValid) {
+        setIsLoggedIn(true);
+        setLogInInfo({ message: "Password correct. Logged In.", status: "success" });
+    } else {
+        setIsLoggedIn(false);
+        setLogInInfo({ message: "Password incorrect. Not Logged In.", status: "error" });
     }
-  };
+};
+
 
   const getLogInInfoStyle = () => {
     switch (logInInfo.status) {
