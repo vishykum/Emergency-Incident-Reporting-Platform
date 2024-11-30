@@ -21,3 +21,9 @@ export class Dict {
       this.map = new Map<Number, L.Marker>();
     }
 };
+
+// Define the type for LogInInfo -> used for password validation 
+export type LogInInfo = {
+  message: string;
+  status: "default" | "success" | "error";
+}

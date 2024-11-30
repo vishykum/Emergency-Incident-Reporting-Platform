@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import IncidentTable from "./components/IncidentTable";
 import InputForm from "./components/InputForm";
 import LogIn from "./components/LogIn";
-import { Incident, Dict } from "./components/types";
+import { hashPassword, validatePassword } from "./password";
+import { Incident, Dict, LogInInfo } from "./components/types";
 import IncidentDescription from "./components/IncidentDescription";
 import "bootstrap/dist/css/bootstrap.min.css";
 import defaultIncidentsJson from './storage/default_incidents.json'
 import Map from "./components/Map";
-import md5 from "md5";
 
 interface MapBounds {
   southwest: L.LatLng;
@@ -18,9 +18,11 @@ const storageKey = "savestate272";
 const idKey = "id";
 
 const App: React.FC = () => {
-  const password: string = md5("password");
-  let input: string = "";
-  const [logInInfo, setLogInInfo] = useState("Not logged In");
+  const password: string = hashPassword("password"); // the initial password
+  const [logInInfo, setLogInInfo] = useState<LogInInfo>({
+    message: "Not logged In",
+    status: "default",
+  });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -46,9 +48,9 @@ const App: React.FC = () => {
   //This effect ensures that it is always displayed whether or not user is logged in
   useEffect (() => {
     if(isLoggedIn) {
-      setLogInInfo("Logged In");
+      setLogInInfo({ message: "Logged In", status: "success" });
     } else {
-      setLogInInfo("Not Logged In");
+      setLogInInfo({ message: "Not Logged In", status: "default" });
     }
   }, [isLoggedIn])
 
@@ -120,10 +122,28 @@ const App: React.FC = () => {
     setId(currId+1);
   };
 
-  const handleLogIn = (i: string) => {
-    input = md5(i);
-    setIsLoggedIn(input === password);
-  }
+  const handleLogIn = (input: string) => {
+    const isValid = validatePassword(input, password);
+    if(isValid){
+      setIsLoggedIn(true);
+      setLogInInfo({ message: "Password correct. Logged In.", status: "success" });
+    }else{
+      setIsLoggedIn(false);
+      setLogInInfo({ message: "Password incorrect. Not Logged In.", status: "error" });
+
+    }
+  };
+
+  const getLogInInfoStyle = () => {
+    switch (logInInfo.status) {
+      case "success":
+        return { color: "green" };
+      case "error":
+        return { color: "red" };
+      default:
+        return { color: "black" };
+    }
+  };
 
   const handleMapClick = (location: [number, number], address: string) => {
     setCoord(location);
@@ -243,7 +263,7 @@ const App: React.FC = () => {
         show={true}
         onSubmit={handleLogIn}
       />
-      <strong>{logInInfo}</strong>
+      <strong style={getLogInInfoStyle()}>{logInInfo.message}</strong>
 
       <IncidentTable
         incidents={incidents.filter(filterBasedOnView)}
