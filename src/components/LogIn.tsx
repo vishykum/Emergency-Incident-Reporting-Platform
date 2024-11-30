@@ -19,14 +19,14 @@ const LogIn: React.FC<LogInProps> = ({ show, onSubmit }) => {
 
     return (
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <label htmlFor="loginInput" style={{ marginRight: "10px" }}>Log in:</label>
+            <label htmlFor="loginInput" style={{ margin: "10px" }}>Log in:</label>
             <input
                 type="text"
                 id="loginInput"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
             />
-            <button onClick={handleSubmit}>Submit</button>
+            <button onClick={handleSubmit} className="btn btn-outline-secondary btn-sm">Submit</button>
         </div>
     );
 };
