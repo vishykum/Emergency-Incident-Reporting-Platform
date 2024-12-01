@@ -38,18 +38,20 @@ const IncidentTable: React.FC<IncidentTableProps> = ({ incidents, onMoreInfo, on
                                 </span>
                             </td>
                             <td>
+                                <div className="d-flex flex-column align-items-center gap-2">
                                 <button
-                                    className="btn btn-link btn-sm text-primary ms-2"
+                                    className="btn btn-outline-success btn-sm"
                                     onClick={() => onMoreInfo(incident)}
                                 >
-                                    See More
+                                    Details
                                 </button>
                                 <button
-                                    className="btn btn-sm btn-danger ms-2"
+                                    className="btn btn-outline-danger btn-sm"
                                     onClick={() => onDelete(incident)}
                                 >
-                                    &#x2716;
+                                    Delete
                                 </button>
+                                </div>
                             </td>
                         </tr>
                     ))}
