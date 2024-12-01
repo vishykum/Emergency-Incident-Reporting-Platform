@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Incident } from "./types";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -17,6 +17,11 @@ const InputForm: React.FC<InputFormProps> = ({ show, onClose, onSubmit, location
         reportedBy: "",
         phoneNumber: "",
         comments: "",
+        image: "",
+    });
+
+    const [errors, setErrors] = useState({
+        phoneNumber: "",
     });
 
     React.useEffect(() => {
@@ -25,11 +30,34 @@ const InputForm: React.FC<InputFormProps> = ({ show, onClose, onSubmit, location
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
+        
+         // Phone number validation
+        if (name === "phoneNumber") {
+            const phoneFormat = /^\d{3}-\d{3}-\d{4}$/; // format: xxx-xxx-xxxx
+            if (!phoneFormat.test(value)) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    phoneNumber: "Phone number must be in the format xxx-xxx-xxxx.",
+                }));
+            } else {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    phoneNumber: "",
+                }));
+            }
+        }
         setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Check for errors before submission
+        if (errors.phoneNumber) {
+            alert("Please fix the errors before submitting.");
+            return;
+        }
+
         onSubmit(formData);
         setFormData({
             type: "",
@@ -37,6 +65,7 @@ const InputForm: React.FC<InputFormProps> = ({ show, onClose, onSubmit, location
             reportedBy: "",
             phoneNumber: "",
             comments: "",
+            image: "",
         });
         onClose();
     };
@@ -106,7 +135,7 @@ const InputForm: React.FC<InputFormProps> = ({ show, onClose, onSubmit, location
                             </label>
                             <input
                                 type="tel"
-                                className="form-control"
+                                className={`form-control ${errors.phoneNumber ? "is-invalid" : ""}`}
                                 id="phoneNumber"
                                 name="phoneNumber"
                                 value={formData.phoneNumber}
@@ -114,6 +143,9 @@ const InputForm: React.FC<InputFormProps> = ({ show, onClose, onSubmit, location
                                 placeholder="e.g., 123-456-7890"
                                 required
                             />
+                            {errors.phoneNumber && (
+                                <div className="invalid-feedback">{errors.phoneNumber}</div>
+                            )}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="comments" className="form-label">
