@@ -34,7 +34,7 @@ const App: React.FC = () => {
   const firstUpdate = useRef(true);   //firstUpdate ensures that incidents are only loaded on the first render
   const markerRefs = useRef(new Dict());
   const [currId, setId] = useState<number>(0);
-  const turnOffDescription = () => {setShowDescription(false)}//prob remove
+  const turnOffDescription = () => { setShowDescription(false) }//prob remove
   let closedescription = turnOffDescription;//prob remove
 
   const handleAddMarkerRef = (id: number, ref: L.Marker | null) => {
@@ -44,22 +44,18 @@ const App: React.FC = () => {
       markerRefs.current.map.delete(id); // Remove marker ref if marker is removed
     }
   };
-  
-  //This effect ensures that the incident table always shows incidents in order from oldest to newest
-  useEffect (() => {
+
+  useEffect(() => {
     incidents.sort(compareNums);
   }, [incidents])
 
-  //This effect ensures that the incidents json in localStorage is up to date
-  useEffect (() => {
+  useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(incidents));
 
     console.log("Json string updated!");
   }, [incidents.length]);
 
-  //This effect ensures that the id json in localStorage is up to date
-  useEffect (() => {
-    //This part closes the popup of the active marker when a new incident is submitted
+  useEffect(() => {
     if (markerRefs.current.map.has(-1)) {
       if (markerRefs.current.map.get(-1)?.isPopupOpen()) markerRefs.current.map.get(-1)?.closePopup();
     }
@@ -69,9 +65,9 @@ const App: React.FC = () => {
     console.log("ID updated!");
   }, [currId]);
 
-  //This effect loads the incidents and id variable from localStorage file to the incidents state
+  // loads the incidents and id variable from localStorage file to the incidents state
   useLayoutEffect(() => {
-    
+
     //CAUTION: The line below should be uncommented only for testing the default incidents
     localStorage.clear();
 
@@ -79,18 +75,18 @@ const App: React.FC = () => {
       const data = localStorage.getItem(storageKey);
       const getId = localStorage.getItem(idKey);
       var objs: Incident[];
-  
+
       if (data == null) {
         objs = defaultIncidentsJson as Incident[];
         console.log("Incidents loaded from default_incidents.json!");
-  
-        
+
+
       }
 
-      else {        
+      else {
         objs = JSON.parse(data) as Incident[];
         console.log("Incidents loaded from localStorage!");
-        
+
       }
 
       if (getId !== null) {
@@ -98,7 +94,7 @@ const App: React.FC = () => {
       }
 
       else {
-        setId(3); //This is because we have incidents with ids 0, 1, and 2 in default_incidents.json
+        setId(3); //we have incidents with ids 0, 1, and 2 in default_incidents.json
       }
 
       setIncidents(objs);
@@ -109,22 +105,22 @@ const App: React.FC = () => {
   const handleFormSubmit = (newIncident: Omit<Incident, "status" | "timeReported" | "latlng" | "id">) => { // we don't need these for the form
     const timeReported = new Date().toLocaleString();
 
-    setIncidents([...incidents, { ...newIncident, timeReported, status: "OPEN", latlng: coord || [200,200], id: currId}]); //200 is out of range for both latitude and longitude
+    setIncidents([...incidents, { ...newIncident, timeReported, status: "OPEN", latlng: coord || [200, 200], id: currId }]); //200 is out of range for both latitude and longitude
     setShowForm(false);
-    
-    setId(currId+1);
+
+    setId(currId + 1);
   };
 
   const handleLogIn = (input: string) => {
     const isValid = validatePassword(input, password);
     if (isValid) {
-        setIsLoggedIn(true);
-        setLogInInfo({ message: "Password correct. Logged In.", status: "success" });
+      setIsLoggedIn(true);
+      setLogInInfo({ message: "Password correct. Logged In.", status: "success" });
     } else {
-        setIsLoggedIn(false);
-        setLogInInfo({ message: "Password incorrect. Not Logged In.", status: "error" });
+      setIsLoggedIn(false);
+      setLogInInfo({ message: "Password incorrect. Not Logged In.", status: "error" });
     }
-};
+  };
 
 
   const getLogInInfoStyle = () => {
@@ -155,7 +151,7 @@ const App: React.FC = () => {
     if (showDescription) {
       setShowDescription(false);
 
-      //This timeout ensures that the values in the sliding pane only updates when re-appears
+      //ensures that the values in the sliding pane only updates when re-appears
       setTimeout(() => {
         if (descriptionIncident !== incident) setDescriptionIncident(incident);
         setShowDescription(true);
@@ -169,7 +165,7 @@ const App: React.FC = () => {
   };
 
   const handleDelete = (incident: Incident) => {
-    if(isLoggedIn) {
+    if (isLoggedIn) {
       if (window.confirm("Are you sure you want to delete this incident?")) {
         setIncidents(incidents.filter((i) => i !== incident)); // deleting logic
       }
@@ -181,15 +177,15 @@ const App: React.FC = () => {
   const handleStatusChange = (incident: Incident, newStatus: string) => {
     setShowDescription(false);
 
-    const incidentCopy = {...incident}
+    const incidentCopy = { ...incident }
 
-    let newIncident = {...incident};
+    let newIncident = { ...incident };
     newIncident.status = newStatus;
 
     console.log(incidentCopy)
-    setIncidents([...incidents.filter((i) => JSON.stringify(i) !== JSON.stringify(incident)), { ...newIncident}]); //JSON.stringify was used to compare the objects by value
+    setIncidents([...incidents.filter((i) => JSON.stringify(i) !== JSON.stringify(incident)), { ...newIncident }]); //JSON.stringify was used to compare the objects by value
 
-    //This timeout ensures that the values in the sliding pane only updates when re-appears
+    //ensures that the values in the sliding pane only updates when re-appears
     setTimeout(() => {
       setDescriptionIncident(newIncident);
       setShowDescription(true);
@@ -201,7 +197,7 @@ const App: React.FC = () => {
     if (showDescription) {
       setShowDescription(false);
 
-      //Timeout for sliding animation when same marker is clicked
+      //sliding animation when same marker is clicked
       setTimeout(() => {
         if (descriptionIncident !== incident) setDescriptionIncident(incident);
         setShowDescription(true);
@@ -219,7 +215,7 @@ const App: React.FC = () => {
   //Only display the incidents within map view in the Incident Table
   const filterBasedOnView = (incident: Incident) => {
     if (mapBounds !== null) {
-      let isInBounds = ((incident.latlng[0] < mapBounds.northeast.lat && incident.latlng[0] > mapBounds.southwest.lat) && ((incident.latlng[1] < mapBounds.northeast.lng && incident.latlng[1] > mapBounds.southwest.lng) ));
+      let isInBounds = ((incident.latlng[0] < mapBounds.northeast.lat && incident.latlng[0] > mapBounds.southwest.lat) && ((incident.latlng[1] < mapBounds.northeast.lng && incident.latlng[1] > mapBounds.southwest.lng)));
 
       return isInBounds;
     }
@@ -229,7 +225,7 @@ const App: React.FC = () => {
 
   function getMapBounds(bounds: [L.LatLng, L.LatLng] | null): void {
     if (bounds !== null)
-      setMapBounds({northeast: bounds[0], southwest: bounds[1]});
+      setMapBounds({ northeast: bounds[0], southwest: bounds[1] });
   }
 
   function compareNums(a: Incident, b: Incident) {
@@ -240,10 +236,10 @@ const App: React.FC = () => {
     <div className="container mt-4">
       <h1 className="text-center mb-4">Incident Reporting</h1>
 
-      <div style={{ position: "relative", width: "60vw", height: "50vh", justifyContent: "center"}}>
+      <div style={{ position: "relative", width: "60vw", height: "50vh", justifyContent: "center" }}>
         <Map incidents={incidents} onAddIncident={handleMapClick} setBounds={getMapBounds} onMarkerClick={handleMarkerClick} onAddMarkerRef={handleAddMarkerRef} />
 
-        <IncidentDescription 
+        <IncidentDescription
           incident={descriptionIncident as Incident} //Incident can't be null here
           show={showDescription}
           loggedIn={isLoggedIn}
@@ -251,7 +247,7 @@ const App: React.FC = () => {
           onStatusChange={handleStatusChange}
         />
       </div>
-      
+
       <LogIn
         show={true}
         onSubmit={handleLogIn}
