@@ -18,6 +18,7 @@ const IncidentTable: React.FC<IncidentTableProps> = ({ incidents, onMoreInfo, on
                         <th>Type</th>
                         <th>Time Reported</th>
                         <th>Status</th>
+                        <th>Image Link</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -38,19 +39,31 @@ const IncidentTable: React.FC<IncidentTableProps> = ({ incidents, onMoreInfo, on
                                 </span>
                             </td>
                             <td>
+                                {incident.image ? (
+                                    <img
+                                        src={incident.image}
+                                        alt={`${incident.type} thumbnail`}
+                                        style={{ width: "100px", height: "75px", objectFit: "cover", borderRadius: "5px" }}
+                                    />
+                                ) : (
+                                    "No image provided"
+                                )}
+                            </td>
+
+                            <td>
                                 <div className="d-flex flex-column align-items-center gap-2">
-                                <button
-                                    className="btn btn-outline-success btn-sm"
-                                    onClick={() => onMoreInfo(incident)}
-                                >
-                                    Details
-                                </button>
-                                <button
-                                    className="btn btn-outline-danger btn-sm"
-                                    onClick={() => onDelete(incident)}
-                                >
-                                    Delete
-                                </button>
+                                    <button
+                                        className="btn btn-outline-success btn-sm"
+                                        onClick={() => onMoreInfo(incident)}
+                                    >
+                                        Details
+                                    </button>
+                                    <button
+                                        className="btn btn-outline-danger btn-sm"
+                                        onClick={() => onDelete(incident)}
+                                    >
+                                        Delete
+                                    </button>
                                 </div>
                             </td>
                         </tr>

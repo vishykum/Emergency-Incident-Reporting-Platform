@@ -11,7 +11,8 @@
         "latlng": [
             49.278582110559014,
             -122.91132393135953
-        ]
+        ],
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrZ_2tUiIn53RBuqoQadqjLF7ofSimSR72fQ&s"
     },
     {
         "id": 1,
@@ -25,7 +26,8 @@
         "latlng": [
             49.22679399184016,
             -123.00018786805234
-        ]
+        ],
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxEOJThjVulbTFWIsP0p00eWd3zF3dP-ZOGA&s"
     },
     {
         "id": 2,
@@ -39,6 +41,7 @@
         "latlng": [
             49.18004382512304,
             -122.81586383597705
-        ]
+        ],
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnlBykvTRpkDV4Z58pB5Yz3wKoB1F97pK5-g&s"
     }
 ]

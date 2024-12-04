@@ -73,7 +73,7 @@ const App: React.FC = () => {
   useLayoutEffect(() => {
     
     //CAUTION: The line below should be uncommented only for testing the default incidents
-    //localStorage.clear();
+    localStorage.clear();
 
     if (firstUpdate.current) {
       const data = localStorage.getItem(storageKey);
@@ -83,12 +83,14 @@ const App: React.FC = () => {
       if (data == null) {
         objs = defaultIncidentsJson as Incident[];
         console.log("Incidents loaded from default_incidents.json!");
+  
+        
       }
 
       else {        
         objs = JSON.parse(data) as Incident[];
         console.log("Incidents loaded from localStorage!");
-
+        
       }
 
       if (getId !== null) {
