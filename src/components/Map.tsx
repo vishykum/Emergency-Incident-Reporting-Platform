@@ -4,7 +4,6 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { Incident } from './types'
 import axios from "axios";
-import API_LIST from "../../api_keys.json"
 
 //Use this in the icon property for the Marker components to get the same marker icons throughout the map
 const markerIcon = new L.Icon({
@@ -38,7 +37,7 @@ const Map: React.FC<MapProps> =  ({incidents, onAddIncident, setBounds, onMarker
         //API for reverse geocoding
         //PLEASE READ THE COMMENT BELOW BEFORE RUNNING THE APPLICATION!!
         //API limitations: 1 request/second and max 500 requests per day. If these limitations are breached, then the location will be set to latitude and longitude instead of address
-        const API_KEY = API_LIST.REVERSE_GEOCODER_API_KEY;
+        const API_KEY = import.meta.env.VITE_REVERSE_GEOCODER_API_KEY;
         const request = String.raw`https://geocode.maps.co/reverse?lat=` + location[0] + String.raw`&lon=` + location[1] + String.raw`&api_key=` + API_KEY;
     
         axios.get(request)

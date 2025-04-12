@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import IncidentTable from "./components/IncidentTable";
 import InputForm from "./components/InputForm";
 import LogIn from "./components/LogIn";
-import { hashPassword, validatePassword } from "./password";
+import { validatePassword } from "./password";
+import passwords from "./storage/password_store.json";
 import { Incident, Dict, LogInInfo } from "./components/types";
 import IncidentDescription from "./components/IncidentDescription";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -18,7 +19,6 @@ const storageKey = "savestate272";
 const idKey = "id";
 
 const App: React.FC = () => {
-  const password: string = hashPassword("password"); // the initial password
   const [logInInfo, setLogInInfo] = useState<LogInInfo>({
     message: "Not logged In",
     status: "default",
@@ -112,7 +112,7 @@ const App: React.FC = () => {
   };
 
   const handleLogIn = (input: string) => {
-    const isValid = validatePassword(input, password);
+    const isValid = passwords.some((password: string) => validatePassword(input, password));
     if (isValid) {
       setIsLoggedIn(true);
       setLogInInfo({ message: "Password correct. Logged In.", status: "success" });
