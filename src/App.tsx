@@ -47,13 +47,11 @@ const App: React.FC = () => {
 
   useEffect(() => {
     incidents.sort(compareNums);
-  }, [incidents])
 
-  useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(incidents));
 
     console.log("Json string updated!");
-  }, [incidents.length]);
+  }, [incidents])
 
   useEffect(() => {
     if (markerRefs.current.map.has(-1)) {
